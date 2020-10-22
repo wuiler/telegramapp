@@ -20,19 +20,34 @@ public class Main {
         String botToken = "bot" + token;
         String urlApiTelegram = "https://api.telegram.org/";
         String urlApiTelegramBot = new StringBuilder(urlApiTelegram).append("{botToken}").toString();
+        String fullResponse = null;
 
         try {
             String urlApiGetMe = new StringBuilder(urlApiTelegramBot).append("/getMe").toString();
 
+            HttpResponse<JsonNode> responseJsonId = Unirest.get(urlApiGetMe).routeParam("botToken", botToken)
+                .asJson();
+
+            fullResponse = responseJsonId.getBody().toPrettyString();
+            String id = responseJsonId
+                    .getBody()
+                    .getObject()
+                    .getJSONObject("result")
+                    .getString("id");
+            
+
+            /*
             String id = Unirest.get(urlApiGetMe).routeParam("botToken", botToken)
                     .asJson()
                     .getBody()
                     .getObject()
                     .getJSONObject("result")
                     .getString("id");
-
+            */
             System.out.println("Telegram API : /getMe");
             System.out.println("My ID : " + id);
+            System.out.println("Full response : " );
+            System.out.println(fullResponse);
 
         } catch (JSONException jsonException) {
             System.out.println("jsonException /getMe: " + jsonException.getMessage());
@@ -70,7 +85,7 @@ public class Main {
                 System.out.println("SendMessage to: " + userName);
                 System.out.println("Status: " + response.getStatusText());
                 System.out.println("Response Body:");
-                System.out.println(response.getBody().toString());
+                System.out.println(response.getBody().toPrettyString());
                 System.out.println("--------------");
                 
             }
